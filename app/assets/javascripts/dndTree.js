@@ -24,10 +24,15 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
 OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+//
 
+
+$(function() {
+
+	var txname = $('.txname').data('txname');
 
 // Get JSON data
-treeJSON = d3.json("./data/utx.json", function(error, treeData) {
+treeJSON = d3.json("http://localhost:8081/web/lineage?tx=" + txname, function(error, treeData) {
 	
     // Calculate total nodes, max label length
     var totalNodes = 0;
@@ -336,8 +341,8 @@ treeJSON = d3.json("./data/utx.json", function(error, treeData) {
         scale = zoomListener.scale();
         x = -source.y0;
         y = -source.x0;
-        x = x * scale + viewerWidth / 2;
-        y = y * scale + viewerHeight / 2;
+        x = x * scale + viewerWidth / 3;
+        y = y * scale + viewerHeight / 3;
         d3.select('g').transition()
             .duration(duration)
             .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
@@ -362,20 +367,19 @@ treeJSON = d3.json("./data/utx.json", function(error, treeData) {
 
     function click(d) {
         if (d3.event.defaultPrevented) return; // click suppressed
-        if (d.children) {
-        	
-        } else {
-	      findNextPage(d);
-		}
+        findNextPage(d);
 		
-        d = toggleChildren(d);
-        update(d);
-        centerNode(d);
+        // d = toggleChildren(d);
+        // update(d);
+        // centerNode(d);
     }
 	
 	// EDITED by SJR
 	function findNextPage(d) {
-		alert("proceeding to next page");
+		// strip CGI string from current URL
+		root_path = window.location.href.split('?')[0]
+		// add current tx_id
+		window.location.assign(root_path + "?tx_id=" + d.name );
 	}
 
     function getTransactionDetails(txName) {
@@ -384,7 +388,13 @@ treeJSON = d3.json("./data/utx.json", function(error, treeData) {
 		    url: "/get_tx_details/" + txName,
 		    dataType: "json",
 		    success: function(data){
-				title = "Name: " + data.name + "\nSatoshi: " + data.satoshi + "\nAddress: " + data.address;
+				delete data.script;
+				delete data.lock_time;
+				delete data.ver;
+				delete data.vin_sz;
+				delete data.vout_sz;
+				
+				title = JSON.stringify(data, null, 1);
 				$("#" + txName).attr("title", title);
 		    }        
 		});
@@ -593,3 +603,7 @@ treeJSON = d3.json("./data/utx.json", function(error, treeData) {
     update(root);
     centerNode(root);
 });
+
+});
+
+

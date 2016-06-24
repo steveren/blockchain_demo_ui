@@ -4,6 +4,7 @@ gem 'mongoid', '~> 5'
 gem 'bson_ext'
 
 gem 'slim'
+gem 'httparty'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.6'

@@ -1,0 +1,65 @@
+<html>
+<head>
+  <style>
+    body {
+      font-family: helvetica;
+    }
+    td, th {
+      padding: 5px;
+    }
+    th {
+      background-color: tan;
+    }
+    .centertext {
+      text-align: center;
+    }
+    .lightgrey {
+      background-color: #E6E6E6
+    }
+    .fixedwidth {
+      font-family: courier;
+    }
+    .rightalign {
+      text-align: right;
+    }
+    .small {
+      font-size: small;
+    }
+	
+    a:link, a:visited {
+		color: darkblue;
+    	text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<table border='1'>
+  <tr>
+    <td colspan='5' class='centertext'><h2>Uncommitted Transactions</h2></td>
+  </tr>
+  
+  <tr>
+    <th>Record ID</th>
+    <th>From Account</th>
+    <th># of Inputs</th>
+    <th>Total Coin (in Satoshis)</th>
+    <th>To Account</th>
+  </tr>
+  
+  <% @utx.each_with_index do |doc, i| %>
+    <% i % 2 == 0 ? bg_color = 'lightgrey' : bg_color = 'none' %>
+    <% inputs_length = doc[:inputs].length %>
+    <% from = doc[:inputs][0]['prev_out']['addr'] %>
+    <% to = doc[:out][0]['addr'] %>
+    <% total = doc[:inputs][0]['prev_out']['value'] %>
+    <% tid = doc[:_id] %>
+    <tr class=<%= bg_color %>>
+	            <td class='small'><%= link_to(tid, root_path(tx_id: tid))  %></td>
+                <td class='fixedwidth'><%= from %></td>
+                <td class='centertext'><%= inputs_length %></td>
+                <td class='rightalign'><%= total %></td>
+                <td class='fixedwidth'><%= to %></td>
+              </tr>
+  <% end %>
+  
+  </table></body></html>
