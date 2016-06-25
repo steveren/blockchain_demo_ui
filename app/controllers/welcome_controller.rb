@@ -12,8 +12,7 @@ class WelcomeController < ApplicationController
   end
   
   def get_utx
-    @utx = Transaction.where({"blockHash" => {"$exists" => 0}}).limit(100)
-    
+    @utx = Transaction.where({"blockHash" => {"$exists" => 0}}).limit(100)  
   end
   
   def get_lineage
@@ -76,19 +75,6 @@ class WelcomeController < ApplicationController
   
     @lineage = result.documents[0]['result']
 
-    nested = {}
-    
-    lin_length = @lineage.length    
-    
-    # @lineage.each do |doc|
-    #
-    #
-    # end
-    
-    
-    
-    
-  
   end
   
 end
